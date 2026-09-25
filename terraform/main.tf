@@ -61,10 +61,17 @@ resource "aws_lambda_permission" "allow_s3_bucket" {
 resource "aws_s3_bucket_notification" "bucket_notification" {
   bucket = aws_s3_bucket.source_bucket.id
 
+  # for both jpg and jpeg file extensions
   lambda_function {
     lambda_function_arn = module.lambda_function.lambda_function_arn
     events              = ["s3:ObjectCreated:*"]
     filter_suffix       = ".jpg"
+  }
+
+  lambda_function {
+    lambda_function_arn = module.lambda_function.lambda_function_arn
+    events              = ["s3:ObjectCreated:*"]
+    filter_suffix       = ".jpeg"
   }
 
   depends_on = [aws_lambda_permission.allow_s3_bucket]
