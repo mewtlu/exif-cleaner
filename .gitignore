@@ -1,4 +1,25 @@
-__pycache__
-
+## Local files for testing
 photo.jpg
 clean_photo.jpg
+
+## Build directory
+outputs
+
+## Python
+__pycache__
+
+## Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform.tfstate.lock.info
+.terraformrc
+terraform.rc
