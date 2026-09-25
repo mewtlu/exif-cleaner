@@ -2,6 +2,7 @@ import json
 import os
 import urllib.parse
 import boto3
+from io import BytesIO
 from exif_cleaner import clean_exif_data
 
 s3_client = boto3.client('s3')
@@ -25,11 +26,16 @@ def handler(event, context):
         # Clean EXIF data from image
         cleaned_image = clean_exif_data(raw_image)
 
+        # Convert to a file-like
+        cleaned_image_file = BytesIO()
+        cleaned_image.save(cleaned_image_file, format='JPEG')
+        cleaned_image_file.seek(0)
+
         # Save cleaned image back to destination S3 bucket
         s3_client.put_object(
             Bucket=destination_bucket,
             Key=key,
-            Body=cleaned_image,
+            Body=cleaned_image_file,
             ContentType=response.get('ContentType', 'image/jpeg')
         )
 
