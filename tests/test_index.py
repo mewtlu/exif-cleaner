@@ -29,7 +29,8 @@ def test_clean_exif_data(image_with_exif: Path, tmp_path: Path):
     output_path = tmp_path / "output_clean.jpg"
 
     # Run the function to clean EXIF data
-    clean_exif_data(image_with_exif, output_path)
+    output = clean_exif_data(image_with_exif)
+    output.save(output_path)
 
     # Assert that the output file has been created with no EXIF data
     assert output_path.exists()

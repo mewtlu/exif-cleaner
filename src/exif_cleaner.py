@@ -1,8 +1,10 @@
 from PIL import Image
+import io
 
-def clean_exif_data(input_path, output_path):
-    with Image.open(input_path) as img:
-        # Construct a new Image with the same mode and size and save it to the target path
+# input can either be a file path or a file-like object
+def clean_exif_data(input):
+    with Image.open(input) as img:
+        # Construct a new Image with the same mode and size, and save it to the target path
         clean_img = Image.new(img.mode, img.size)
         clean_img.putdata(list(img.get_flattened_data()))
-        clean_img.save(output_path)
+        return clean_img
