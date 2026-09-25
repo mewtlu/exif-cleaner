@@ -25,11 +25,13 @@ def handler(event, context):
 
         # Clean EXIF data from image
         cleaned_image = clean_exif_data(raw_image)
+        print('Successfully cleaned image with key', key)
 
         # Convert to a file-like
         cleaned_image_file = BytesIO()
         cleaned_image.save(cleaned_image_file, format='JPEG')
         cleaned_image_file.seek(0)
+
 
         # Save cleaned image back to destination S3 bucket
         s3_client.put_object(
@@ -38,6 +40,8 @@ def handler(event, context):
             Body=cleaned_image_file,
             ContentType=response.get('ContentType', 'image/jpeg')
         )
+
+        print('Successfully saved image with key', key, 'to bucket', destination_bucket)
 
     return {
         'statusCode': 200,
