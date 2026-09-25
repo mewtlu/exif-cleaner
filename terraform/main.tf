@@ -5,7 +5,17 @@ data "archive_file" "lambda_zip" {
   output_path = "${path.module}/../outputs/lambda_function.zip"
 }
 
-## Lambda package module
+## IAM module
+module "iam" {
+  source = "./iam"
+  aws_region = var.aws_region
+  environment = var.environment
+  source_bucket_arn = aws_s3_bucket.source_bucket.arn
+  destination_bucket_arn = aws_s3_bucket.destination_bucket.arn
+  service_name = var.service_name
+}
+
+## Lambda function module
 module "lambda_function" {
   source  = "terraform-aws-modules/lambda/aws"
   version = "~> 7.0" # Use the latest stable version
@@ -19,13 +29,13 @@ module "lambda_function" {
   architectures    = ["x86_64"]
 
   # Module options
-  source_path      = "${path.module}/../src" 
-  create_role      = false
-  build_in_docker  = true
-  docker_image     = "public.ecr.aws/sam/build-${var.python_runtime}:latest"
-  docker_file      = "${path.module}/../Dockerfile"
+  source_path       = "${path.module}/../src" 
+  lambda_role       = module.iam.lambda_role_arn
+  create_role       = false
+  build_in_docker   = true
+  docker_image      = "public.ecr.aws/sam/build-${var.python_runtime}:latest"
+  docker_file       = "${path.module}/../Dockerfile"
   docker_build_root = "${path.module}/../src"
-  lambda_role      = aws_iam_role.lambda_role.arn
   use_existing_cloudwatch_log_group = true
 
   environment_variables = {
@@ -36,8 +46,6 @@ module "lambda_function" {
     Environment = var.environment,
     Service = var.service_name,
   }
-
-  depends_on = [aws_iam_role_policy_attachment.lambda_logs]
 }
 
 # Allow bucket to trigger function execution

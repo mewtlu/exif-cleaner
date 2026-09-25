@@ -26,7 +26,7 @@ resource "aws_iam_role_policy" "source_bucket_write_policy" {
       {
         Action = "s3:GetObject"
         Effect = "Allow",
-        Resource = "${aws_s3_bucket.source_bucket.arn}/*"
+        Resource = "${var.source_bucket_arn}/*"
       }
     ]
   })
@@ -42,7 +42,7 @@ resource "aws_iam_role_policy" "destination_bucket_write_policy" {
       {
         Action = "s3:PutObject"
         Effect = "Allow",
-        Resource = "${aws_s3_bucket.destination_bucket.arn}/*"
+        Resource = "${var.destination_bucket_arn}/*"
       }
     ]
   })
