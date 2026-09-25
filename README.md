@@ -17,6 +17,14 @@ The service is configured using environment variables, a list of which is shown 
 | SOURCE_BUCKET        | Name of the source bucket to monitor for uploaded images. |
 | DESTINATION_BUCKET   | Name of the destination bucket to write the cleaned images to. |
 
+**Note: To test deployment of this terraform project, values in the `terraform/variables.tf` and `terraform/backend.tf` for S3 bucket names should be altered, as these must be globally unique.** These values are:
+
+| File | Variable | Default |
+|---|---|---|
+| variables.tf | source_bucket_name default      | mewtlu-exif-cleaner-src-bucket |
+| variables.tf | destination_bucket_name default | mewtlu-exif-cleaner-dst-bucket |
+| backend.tf   | backend bucket name             | mewtlu-exif-cleaner-backend |
+
 ## Testing / Development
 
 ### Prerequisites
