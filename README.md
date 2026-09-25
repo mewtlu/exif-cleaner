@@ -34,7 +34,7 @@ The service is configured using environment variables, a list of which is shown 
 
 ### Installing dependencies
 
-Run `pip install -r requirements.txt` to use pip to install python dependencies.
+Run `pip install -r src/requirements.txt` to use pip to install python dependencies.
 
 ### Running Tests
 
