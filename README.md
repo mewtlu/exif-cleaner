@@ -21,7 +21,7 @@ The service is configured using environment variables, a list of which is shown 
 
 ### Prerequisites
 
-- Python 3
+- Python 3 + pip
 - Terraform
 
 ### Installing dependencies
