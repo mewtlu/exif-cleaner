@@ -14,8 +14,8 @@ module "lambda_function" {
   function_name    = var.service_name
   handler          = "handler.handler"
   runtime          = var.python_runtime
-  memory_size      = 256
-  timeout          = 5 
+  memory_size      = 512
+  timeout          = 15 
   architectures    = ["x86_64"]
 
   # Module options
