@@ -4,7 +4,8 @@ resource "aws_s3_bucket" "source_bucket" {
   force_destroy = true
 
   tags = {
-    Environment = var.environment
+    Environment = var.environment,
+    Service = var.service_name,
   }
 }
 
@@ -24,7 +25,8 @@ resource "aws_s3_bucket" "destination_bucket" {
   force_destroy = true
 
   tags = {
-    Environment = var.environment
+    Environment = var.environment,
+    Service = var.service_name,
   }
 }
 

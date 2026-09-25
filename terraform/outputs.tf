@@ -4,6 +4,6 @@ output "s3_bucket_name" {
 }
 
 output "lambda_arn" {
-  value       = aws_lambda_function.exif_cleaner.arn
+  value       = module.lambda_function.lambda_function_arn
   description = "The full ARN of the EXIF cleaner Lambda function."
 }

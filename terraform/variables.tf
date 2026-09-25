@@ -10,6 +10,12 @@ variable "environment" {
   description = "The name of the deployment environment."
 }
 
+variable "python_runtime" {
+  type        = string
+  default     = "python3.14"
+  description = "The target python runtime."
+}
+
 variable "source_bucket_name" {
   type        = string
   default     = "mewtlu-exif-cleaner-src-bucket"
@@ -22,7 +28,7 @@ variable "destination_bucket_name" {
   description = "The name to be used for the destination S3 bucket."
 }
 
-variable "lambda_function_name" {
+variable "service_name" {
   type        = string
   default     = "exif-cleaner"
   description = "The name to be used for the Lambda function and related resources."

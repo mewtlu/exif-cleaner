@@ -5,25 +5,34 @@ data "archive_file" "lambda_zip" {
   output_path = "${path.module}/../outputs/lambda_function.zip"
 }
 
-# Deploy the function using the source archive
-resource "aws_lambda_function" "exif_cleaner" {
-  filename         = data.archive_file.lambda_zip.output_path
-  function_name    = var.lambda_function_name
-  role             = aws_iam_role.lambda_role.arn
-  handler          = "handler.handler"
-  runtime          = "python3.13"
-  memory_size      = 512
-  timeout          = 5
-  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+## Lambda package module
+module "lambda_function" {
+  source  = "terraform-aws-modules/lambda/aws"
+  version = "~> 7.0" # Use the latest stable version
 
-  environment {
-    variables = {
-      DESTINATION_BUCKET = aws_s3_bucket.destination_bucket.id
-    }
+  # Lambda function options
+  function_name    = var.service_name
+  handler          = "handler.handler"
+  runtime          = var.python_runtime
+  memory_size      = 256
+  timeout          = 5 
+  architectures    = ["x86_64"]
+
+  # Module options
+  source_path      = "${path.module}/../src" 
+  create_role      = false
+  build_in_docker  = true
+  docker_image     = "public.ecr.aws/sam/build-${var.python_runtime}:latest"
+  lambda_role      = aws_iam_role.lambda_role.arn
+  use_existing_cloudwatch_log_group = true
+
+  environment_variables = {
+    DESTINATION_BUCKET = aws_s3_bucket.destination_bucket.id
   }
 
   tags = {
-    Environment = var.environment
+    Environment = var.environment,
+    Service = var.service_name,
   }
 
   depends_on = [aws_iam_role_policy_attachment.lambda_logs]
@@ -33,7 +42,7 @@ resource "aws_lambda_function" "exif_cleaner" {
 resource "aws_lambda_permission" "allow_s3_bucket" {
   statement_id  = "AllowExecutionFromS3Bucket"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.exif_cleaner.function_name
+  function_name = var.service_name
   principal     = "s3.amazonaws.com"
   source_arn    = aws_s3_bucket.source_bucket.arn
 }
@@ -43,7 +52,7 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
   bucket = aws_s3_bucket.source_bucket.id
 
   lambda_function {
-    lambda_function_arn = aws_lambda_function.exif_cleaner.arn
+    lambda_function_arn = module.lambda_function.lambda_function_arn
     events              = ["s3:ObjectCreated:*"]
     filter_suffix       = ".jpg"
   }
