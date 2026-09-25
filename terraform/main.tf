@@ -23,6 +23,8 @@ module "lambda_function" {
   create_role      = false
   build_in_docker  = true
   docker_image     = "public.ecr.aws/sam/build-${var.python_runtime}:latest"
+  docker_file      = "${path.module}/../Dockerfile"
+  docker_build_root = "${path.module}/../src"
   lambda_role      = aws_iam_role.lambda_role.arn
   use_existing_cloudwatch_log_group = true
 
